@@ -1,0 +1,30 @@
+1. mixed：混合同步比例测试（比例变化）
+目的：研究在 总 job 数固定为 4 的前提下，不同同步 I/O 比例对性能的影响。
+同步比例：0%, 25%, 50%, 75%, 100%
+对应 job 数：
+0% → 0 sync + 4 async
+25% → 1 sync + 3 async
+50% → 2 sync + 2 async
+75% → 3 sync + 1 async
+100% → 4 sync + 0 async
+📌 文件命名：test_mixed_randwrite_bs4k_sync50.json
+
+2. sync1_asyncN：固定 1 个同步 job，异步 job 数从 0 到 16
+目的：模拟 一个关键同步任务（如日志写入） 在运行时，系统中并发异步任务（如用户请求）逐渐增加的场景。
+同步 job 数：固定为 1（psync）
+异步 job 数：从 0 到 16 变化（libaio）
+总 job 数：1 ~ 17 个（动态变化）
+适用问题：
+同步任务的延迟是否会随异步负载上升而恶化？
+系统整体吞吐是否受同步任务限制？
+📌 文件命名：test_sync1_asyncN_randread_bs4k_async8.json
+
+3. async1_syncN：固定 1 个异步 job，同步 job 数从 0 到 16
+目的：研究当系统中存在一个异步任务时，增加同步任务对系统性能的影响。
+异步 job 数：固定为 1（libaio）
+同步 job 数：从 0 到 16 变化（psync）
+总 job 数：1 ~ 17 个
+适用问题：
+同步任务是否会“拖慢”异步任务？
+CPU 占用是否随同步任务线性增长？
+📌 文件命名：test_async1_syncN_write_bs64k_sync12.json

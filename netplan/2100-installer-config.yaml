@@ -1,0 +1,36 @@
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens2f0:
+      dhcp4: no
+      optional: true
+      addresses:
+              - 192.168.0.21/24
+              - 192.168.100.21/32  
+      gateway4: 192.168.0.66
+      nameservers:
+       addresses:
+       - 8.8.8.8
+    ens2f1:
+      dhcp4: true
+      optional: true
+    ibs6:
+      addresses:
+      - 25.8.0.21/24
+      renderer: networkd
+    ibs5f0:
+      addresses:
+      - 25.8.0.11/24
+      renderer: networkd
+    ibs5f1:
+      addresses:
+      - 12.0.0.21/24
+      renderer: networkd
+    tmfifo_net0:
+      addresses:
+      - 192.168.100.1/24
+      routes:
+        - to: 192.168.21.0/24
+          scope: link
+      renderer: networkd
+  version: 2
