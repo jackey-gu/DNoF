@@ -1,0 +1,27 @@
+# 进入目录
+cd dnof_overhead_results/randread_bs4k_depth64_direct1_20250405_100000/run_1/
+
+# 合并生成 .txt
+blkparse -i blktrace -o blktrace.combined.txt
+
+# 验证
+ls -l blktrace.combined.txt
+
+
+
+
+mdadm --create --level=0 --raid-devices=2 /dev/md0 /dev/nvme3n2 /dev/nvmen1
+
+sudo umount /dev/nvme3n2* /dev/nvmen1* 2>/dev/null || true
+
+# 2. 停止可能的旧阵列
+sudo mdadm --stop /dev/md0 2>/dev/null || true
+
+# 3. 清除超级块
+sudo mdadm --zero-superblock /dev/nvme3n2 /dev/nvmen1
+
+# 4. 移除 LVM 签名（如有）
+sudo pvremove /dev/nvme3n2 /dev/nvmen1 2>/dev/null || true
+
+# 5. 确保 no blktrace running
+sudo killall blktrace 2>/dev/null || true
